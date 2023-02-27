@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="crud_ajaxModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tbl_depart">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="tbl_students">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="100" />
+          <Property Name="email" Type="nvarchar" MaxLength="100" />
+          <Property Name="isdeleted" Type="bit" />
+          <Property Name="dpt" Type="bigint" />
+        </EntityType>
+        <Association Name="FK_tbl_students_tbl_depart">
+          <End Role="tbl_depart" Type="Self.tbl_depart" Multiplicity="0..1" />
+          <End Role="tbl_students" Type="Self.tbl_students" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_depart">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_students">
+              <PropertyRef Name="dpt" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="crud_ajaxModelStoreContainer">
+          <EntitySet Name="tbl_depart" EntityType="Self.tbl_depart" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_students" EntityType="Self.tbl_students" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_tbl_students_tbl_depart" Association="Self.FK_tbl_students_tbl_depart">
+            <End Role="tbl_depart" EntitySet="tbl_depart" />
+            <End Role="tbl_students" EntitySet="tbl_students" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="crud_ajaxModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tbl_depart">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbl_students" Relationship="Self.FK_tbl_students_tbl_depart" FromRole="tbl_depart" ToRole="tbl_students" />
+        </EntityType>
+        <EntityType Name="tbl_students">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="isdeleted" Type="Boolean" />
+          <Property Name="dpt" Type="Int64" />
+          <NavigationProperty Name="tbl_depart" Relationship="Self.FK_tbl_students_tbl_depart" FromRole="tbl_students" ToRole="tbl_depart" />
+        </EntityType>
+        <Association Name="FK_tbl_students_tbl_depart">
+          <End Role="tbl_depart" Type="Self.tbl_depart" Multiplicity="0..1" />
+          <End Role="tbl_students" Type="Self.tbl_students" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_depart">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_students">
+              <PropertyRef Name="dpt" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="crud_ajaxEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tbl_depart" EntityType="Self.tbl_depart" />
+          <EntitySet Name="tbl_students" EntityType="Self.tbl_students" />
+          <AssociationSet Name="FK_tbl_students_tbl_depart" Association="Self.FK_tbl_students_tbl_depart">
+            <End Role="tbl_depart" EntitySet="tbl_depart" />
+            <End Role="tbl_students" EntitySet="tbl_students" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="crud_ajaxModelStoreContainer" CdmEntityContainer="crud_ajaxEntities">
+          <EntitySetMapping Name="tbl_depart">
+            <EntityTypeMapping TypeName="crud_ajaxModel.tbl_depart">
+              <MappingFragment StoreEntitySet="tbl_depart">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_students">
+            <EntityTypeMapping TypeName="crud_ajaxModel.tbl_students">
+              <MappingFragment StoreEntitySet="tbl_students">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="isdeleted" ColumnName="isdeleted" />
+                <ScalarProperty Name="dpt" ColumnName="dpt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,31 +1,76 @@
-﻿@{
+﻿@model Crud_with_Ajax.Models.StudentViewModel
+
+
+
+@{
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+
+
+<div class="container" style="margin:3px;">
+
+
+
+    <a href="#" class="btn btn-default" onclick="addnewstudent(0)">Add New Student</a>
+    <br />
+    <br />
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Student Email</th>
+                <th>Department Name</th>
+                <th>Action (Edit)</th>
+                <th>Action (Delete)</th>
+            </tr>
+        </thead>
+        <tbody id="setstudentdata">
+            <tr id="loadingdata" style="color:red;"></tr>
+        </tbody>
+    </table>
+
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+
+<script>
+
+
+
+    $("#loadingdata").html("loading...");
+    $.get("/Home/GetStudentList", null, databind);
+    
+    function databind(stdlist) {
+
+        var setdata = $("#setstudentdata");
+        
+        for (var i=0; i < stdlist.length; i++) {
+            var data = "<tr class='row_" + stdlist[i].id + "'>" +
+                "<td>" + stdlist[i].id + "</td>" +
+                "<td>" + stdlist[i].name + "</td>" +
+                "<td>" + stdlist[i].email + "</td>" +
+                "<td>" + stdlist[i].dpname + "</td>" +
+                "<td>" + "<a href='#' class='btn btn-warning' onclick='editstudent(" + stdlist[i].id + ")'><span class='glyphicon glyphicon-edit'></span></a>" + "</td>" +
+                "<td>" + "<a href='#' class='btn btn-danger' onclick='delstudent(" + stdlist[i].id + ")'><span class='glyphicon glyphicon-delete'></span></a>" + "</td>" +
+                "</tr>";
+            debugger;
+            setdata.append(data);
+            $("#loadingdata").html("");
+        }
+
+    }
+
+
+
+
+
+</script>
+
+
