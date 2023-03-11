@@ -18,7 +18,7 @@
 
 
 
-    <a href="#" class="btn btn-default" onclick="addnewstudent(0)">Add New Student</a>
+    <a href="#" class="btn btn-info" style="margin-top:100px" onclick="addnewstudent(0)">Add New Student</a>
     <br />
     <br />
     <table class="table table-striped">
@@ -36,6 +36,57 @@
             <tr id="loadingdata" style="color:red;"></tr>
         </tbody>
     </table>
+    <div class="modal fade" id="mymodal2">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4>Delete Student Record</h4>
+                </div>
+                <div class="modal-body">
+                  <h4>Are You Sure You Want To delete STudent Record</h4>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary" data-dismiss="modal">Cancel</a>
+                    <button class="btn btn-danger" onclick="confirm()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="mymodal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4 id="modaltitle"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form">
+                        <fieldset id="submitform">
+                            @Html.HiddenFor(x => x.id, new { @id = "stuid" })
+                            <div class="form-group">
+                                @Html.TextBoxFor(x => x.name, new { @id = "stname", @class = "form-control", @placeholder = "Enter Your Name" })
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(x => x.email, new { @id = "stemail", @class = "form-control", @placeholder = "Enter Your Email" })
+                            </div>
+                            <div class="form-group">
+                                @Html.DropDownListFor(x => x.dpt, ViewBag.Departlist as SelectList, "== SELECT DEPARTMENT ==", new { @id = "dpt", @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <a href="#" id="savesturecord" class="btn btn-block btn-danger">
+                                    Save
+                                </a>
+                            </div>
+
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </div>
 
@@ -52,18 +103,114 @@
         var setdata = $("#setstudentdata");
         
         for (var i=0; i < stdlist.length; i++) {
-            var data = "<tr class='row_" + stdlist[i].id + "'>" +
+            var data = "<tr id='row_" + stdlist[i].id + "'>" +
                 "<td>" + stdlist[i].id + "</td>" +
                 "<td>" + stdlist[i].name + "</td>" +
                 "<td>" + stdlist[i].email + "</td>" +
                 "<td>" + stdlist[i].dpname + "</td>" +
                 "<td>" + "<a href='#' class='btn btn-warning' onclick='editstudent(" + stdlist[i].id + ")'><span class='glyphicon glyphicon-edit'></span></a>" + "</td>" +
-                "<td>" + "<a href='#' class='btn btn-danger' onclick='delstudent(" + stdlist[i].id + ")'><span class='glyphicon glyphicon-delete'></span></a>" + "</td>" +
+                "<td>" + "<a href='#' class='btn btn-danger' onclick='delstudent(" + stdlist[i].id + ")'><span class='glyphicon glyphicon-trash'></span></a>" + "</td>" +
                 "</tr>";
-            debugger;
             setdata.append(data);
-            $("#loadingdata").html("");
+           
         }
+        $("#loadingdata").html("");
+
+    }
+
+
+    function addnewstudent(stdid) {
+        $("#form")[0].reset();
+        $("#stuid").val(0);
+        $("#dpt option:selected").text("== SELECT DEPARTMENT ==");
+        $("#modaltitle").html("ADD NEW STUDENT");
+        $("#mymodal").modal();
+    }
+
+
+    $("#savesturecord").click(function () {
+
+
+
+        var data = $("#submitform").serialize();
+        var email = $("#stemail").val();
+        if (email.length>0) {
+            $.ajax({
+
+
+                type: "post",
+                url: "/Home/savedata",
+                data: data,
+                success: function (result) {
+                 
+                    window.location.href = "/Home/Index";
+                    $("mymodal").modal("hide");
+                       
+                }
+
+
+            })
+        } else {
+            alert("Please enter Email address");
+        }
+
+
+
+    });
+
+
+    function editstudent(stdid) {
+
+      
+        var url = "/Home/getstudentbyid?stdid=" + stdid;
+        $("#modaltitle").html("Update Record");
+        $("#mymodal").modal();
+        $.ajax({
+
+            type: "GET",
+            url: url,
+            success: function (data) {
+                var obj = JSON.parse(data);
+                $("#stuid").val(obj.id);
+                $("#stname").val(obj.name);
+                $("#stemail").val(obj.email);
+                $("#dpt option:selected").text(obj.tbl_depart.name);
+                $("#dpt option:selected").val(obj.dpt);
+               
+
+            }
+
+
+
+
+        });
+
+    }
+
+    var delstudent = function (stdid) {
+        $("#stuid").val(stdid);
+        $("#mymodal2").modal("show");
+    }
+
+
+    var confirm = function () {
+
+
+        var stdid = $("#stuid").val();
+        $.ajax({
+
+            type: "POST",
+            url: "/Home/deldata?stdid=" + stdid,
+            success: function (result) {
+                $("#mymodal2").modal("hide");
+                $("#row_" + stdid).remove();
+              
+            }
+
+        })
+
+
+
 
     }
 
